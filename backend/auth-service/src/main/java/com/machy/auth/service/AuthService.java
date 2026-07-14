@@ -84,9 +84,12 @@ public class AuthService {
                 .usuario(user)
                 .build());
 
+        String avatar = (user.getNombre() != null && !user.getNombre().isEmpty()
+                && user.getApellidos() != null && !user.getApellidos().isEmpty())
+                ? (user.getNombre().charAt(0) + "" + user.getApellidos().charAt(0)).toUpperCase()
+                : "??";
         return new LoginResponse(token, user.getId().toString(), user.getNombre(),
-                user.getApellidos(), user.getUsername(), user.getRol(), user.getTurno(),
-                (user.getNombre().charAt(0) + "" + user.getApellidos().charAt(0)).toUpperCase());
+                user.getApellidos(), user.getUsername(), user.getRol(), user.getTurno(), avatar);
     }
 
     public Map<String, Object> recoverPassword(PasswordRecoveryRequest request) {

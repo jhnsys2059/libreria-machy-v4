@@ -22,44 +22,34 @@ public class DatabaseSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        seedUsers();
-        log.info("Auth Service - Database seeding completed");
+        if (userRepository.count() == 0) {
+            seedUsers();
+        } else {
+            log.info("Users already exist ({} found), skipping seed", userRepository.count());
+        }
     }
 
     private void seedUsers() {
-        saveOrUpdateUser("admin", "Jhon", "Taipe", "00000000", "admin@machy.com", "admin123", "admin", "completo");
-        saveOrUpdateUser("ana", "Ana", "Flores", "11111111", "ana@machy.com", "vendedor123", "vendedor", "completo");
-        saveOrUpdateUser("miguel", "Miguel", "Torres", "22222222", "miguel@machy.com", "vendedor123", "vendedor", "tarde");
+        createUser("admin", "Jhon", "Taipe", "00000000", "jhonelvs1919@gmail.com", "admin123", "admin", "completo");
+        createUser("ana", "Ana", "Flores", "11111111", "ana@machy.com", "vendedor123", "vendedor", "completo");
+        createUser("miguel", "Miguel", "Torres", "22222222", "miguel@machy.com", "vendedor123", "vendedor", "tarde");
+        log.info("Auth Service - Database seeding completed (3 users created)");
     }
 
-    private void saveOrUpdateUser(String username, String nombre, String apellidos,
-                                   String dni, String correo, String password,
-                                   String rol, String turno) {
-        var opt = userRepository.findByUsername(username);
-        if (opt.isPresent()) {
-            var user = opt.get();
-            user.setNombre(nombre);
-            user.setApellidos(apellidos);
-            user.setDni(dni);
-            user.setCorreo(correo);
-            user.setRol(rol);
-            user.setTurno(turno);
-            user.setPasswordHash(passwordEncoder.encode(password));
-            user.setActivo(true);
-            userRepository.save(user);
-        } else {
-            var user = new User();
-            user.setUsername(username);
-            user.setNombre(nombre);
-            user.setApellidos(apellidos);
-            user.setDni(dni);
-            user.setCorreo(correo);
-            user.setPasswordHash(passwordEncoder.encode(password));
-            user.setRol(rol);
-            user.setTurno(turno);
-            user.setActivo(true);
-            user.setIntentosFallidos(0);
-            userRepository.save(user);
-        }
+    private void createUser(String username, String nombre, String apellidos,
+                             String dni, String correo, String password,
+                             String rol, String turno) {
+        var user = new User();
+        user.setUsername(username);
+        user.setNombre(nombre);
+        user.setApellidos(apellidos);
+        user.setDni(dni);
+        user.setCorreo(correo);
+        user.setPasswordHash(passwordEncoder.encode(password));
+        user.setRol(rol);
+        user.setTurno(turno);
+        user.setActivo(true);
+        user.setIntentosFallidos(0);
+        userRepository.save(user);
     }
 }
