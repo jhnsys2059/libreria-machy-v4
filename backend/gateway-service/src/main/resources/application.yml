@@ -12,43 +12,43 @@ spring:
           lower-case-service-id: true
       routes:
         - id: auth-service
-          uri: ${AUTH_SERVICE_URL:http://localhost:8081}
+          uri: lb://auth-service
           predicates:
             - Path=/api/auth/**
         - id: users-route
-          uri: ${AUTH_SERVICE_URL:http://localhost:8081}
+          uri: lb://auth-service
           predicates:
             - Path=/api/users/**
         - id: config-route
-          uri: ${AUTH_SERVICE_URL:http://localhost:8081}
+          uri: lb://auth-service
           predicates:
             - Path=/api/config
         - id: product-service
-          uri: ${PRODUCT_SERVICE_URL:http://localhost:8082}
+          uri: lb://product-service
           predicates:
             - Path=/api/products/**
         - id: categories-route
-          uri: ${PRODUCT_SERVICE_URL:http://localhost:8082}
+          uri: lb://product-service
           predicates:
             - Path=/api/categories/**
         - id: suppliers-route
-          uri: ${PRODUCT_SERVICE_URL:http://localhost:8082}
+          uri: lb://product-service
           predicates:
             - Path=/api/suppliers/**
         - id: sale-service
-          uri: ${SALE_SERVICE_URL:http://localhost:8083}
+          uri: lb://sale-service
           predicates:
             - Path=/api/sales/**
         - id: dashboard-route
-          uri: ${SALE_SERVICE_URL:http://localhost:8083}
+          uri: lb://sale-service
           predicates:
             - Path=/api/dashboard
         - id: attendance-route
-          uri: ${SALE_SERVICE_URL:http://localhost:8083}
+          uri: lb://sale-service
           predicates:
             - Path=/api/attendance/**
         - id: scan-route
-          uri: ${SALE_SERVICE_URL:http://localhost:8083}
+          uri: lb://sale-service
           predicates:
             - Path=/api/scan/**
 
@@ -56,7 +56,7 @@ spring:
       globalcors:
         cors-configurations:
           '[/**]':
-            allowedOrigins: ${CORS_ORIGINS:http://localhost:8084}
+            allowedOrigins: ${CORS_ORIGINS:*}
             allowedMethods:
               - GET
               - POST
