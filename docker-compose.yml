@@ -1,0 +1,136 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: libreria-postgres
+    environment:
+      POSTGRES_DB: libreria_machy
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./setup-schemas.sql:/docker-entrypoint-initdb.d/01-schemas.sql
+    networks:
+      - libreria-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  discovery-service:
+    build:
+      context: .
+      dockerfile: backend/discovery-service/Dockerfile
+    container_name: libreria-discovery
+    ports:
+      - "8761:8761"
+    environment:
+      PORT: 8761
+      HOSTNAME: discovery-service
+    networks:
+      - libreria-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: backend/auth-service/Dockerfile
+    container_name: libreria-auth
+    ports:
+      - "8081:8081"
+    environment:
+      PORT: 8081
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/libreria_machy?currentSchema=auth_schema
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      EUREKA_URL: http://discovery-service:8761/eureka/
+      SERVICE_HOSTNAME: auth-service
+    networks:
+      - libreria-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      discovery-service:
+        condition: service_started
+
+  product-service:
+    build:
+      context: .
+      dockerfile: backend/product-service/Dockerfile
+    container_name: libreria-product
+    ports:
+      - "8082:8082"
+    environment:
+      PORT: 8082
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/libreria_machy?currentSchema=product_schema
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      EUREKA_URL: http://discovery-service:8761/eureka/
+      SERVICE_HOSTNAME: product-service
+    networks:
+      - libreria-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      discovery-service:
+        condition: service_started
+
+  sale-service:
+    build:
+      context: .
+      dockerfile: backend/sale-service/Dockerfile
+    container_name: libreria-sale
+    ports:
+      - "8083:8083"
+    environment:
+      PORT: 8083
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/libreria_machy?currentSchema=sale_schema
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      EUREKA_URL: http://discovery-service:8761/eureka/
+      SERVICE_HOSTNAME: sale-service
+    networks:
+      - libreria-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      discovery-service:
+        condition: service_started
+
+  gateway-service:
+    build:
+      context: .
+      dockerfile: backend/gateway-service/Dockerfile
+    container_name: libreria-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      PORT: 8080
+      EUREKA_URL: http://discovery-service:8761/eureka/
+      SERVICE_HOSTNAME: gateway-service
+      AUTH_SERVICE_URL: http://auth-service:8081
+      PRODUCT_SERVICE_URL: http://product-service:8082
+      SALE_SERVICE_URL: http://sale-service:8083
+      CORS_ORIGINS: "*"
+    networks:
+      - libreria-network
+    depends_on:
+      - discovery-service
+      - auth-service
+      - product-service
+      - sale-service
+
+networks:
+  libreria-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
