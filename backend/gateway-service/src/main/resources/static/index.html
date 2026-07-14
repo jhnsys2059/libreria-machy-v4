@@ -676,7 +676,7 @@
             <div class="cfg-row"><div><div class="cfg-rl">Zona horaria · RNF-18</div></div><span class="badge b-navy">America/Lima UTC-5</span></div>
             <div class="cfg-row"><div><div class="cfg-rl">Base de datos</div></div><span class="badge b-teal">PostgreSQL</span></div>
             <div class="cfg-row"><div><div class="cfg-rl">Modo de datos</div></div><span class="badge b-green" id="cfg-mode-badge">API</span></div>
-            <button class="btn btn-outline btn-full btn-sm" style="margin-top:14px" onclick="(async()=>{const r=await fetch('/api/reports/dashboard'); toast(r.ok?'Conexión OK ✅':'Error de conexión ❌',r.ok?'success':'error');})()">🔄 Probar conexión</button>
+            <button class="btn btn-outline btn-full btn-sm" style="margin-top:14px" onclick="(async()=>{try{const r=await fetch('/api/dashboard');toast(r.ok?'Conexión OK ✅':'Error de conexión ❌',r.ok?'success':'error');}catch(e){toast('Error de conexión ❌','error');}})()">🔄 Probar conexión</button>
           </div>
         </div>
         <!-- Categorías (RF-33) -->
