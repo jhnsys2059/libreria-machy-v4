@@ -34,15 +34,9 @@ app:
   jwt:
     secret: libreria_machy_jwt_secret_key_2024_v4_microservices_very_long
     expiration-ms: 28800000
-
-logging:
-  level:
-    com.machy: DEBUG
-
-springdoc:
-  api-docs:
-    path: /api-docs
-  swagger-ui:
-    path: /swagger-ui.html
-    tags-sorter: alpha
-    operations-sorter: alpha
+  smtp:
+    host: ${SMTP_HOST:smtp.gmail.com}
+    port: ${SMTP_PORT:587}
+    username: ${SMTP_USERNAME:}
+    password: ${SMTP_PASSWORD:}
+    from: ${SMTP_FROM:${SMTP_USERNAME:}}

@@ -174,7 +174,11 @@ async function recuperarPassword() {
     const result = await api.recover(usr);
     res.style.display = 'block';
     res.style.background = '#DCFCE7'; res.style.color = '#16A34A';
-    res.innerHTML = `✅ Contraseña restablecida para <strong>${result.nombre} ${result.apellidos}</strong>.<br>Usuario: <strong>${result.username}</strong><br>Nueva contraseña: <strong>${result.password}</strong><br><span style="font-size:.78rem;color:#16A34A">Cambia tu contraseña después de iniciar sesión.</span>`;
+    if (result.correoEnviado) {
+      res.innerHTML = `✅ Contraseña restablecida.<br>Revisa tu correo <strong>${result.correo}</strong> para la nueva contraseña.<br><span style="font-size:.78rem;color:#16A34A">Si no encuentras el correo, revisa la bandeja de spam.</span>`;
+    } else {
+      res.innerHTML = `✅ Contraseña restablecida para <strong>${result.nombre} ${result.apellidos}</strong>.<br>Usuario: <strong>${result.username}</strong><br>Nueva contraseña: <strong>${result.password}</strong><br><span style="font-size:.78rem;color:#16A34A">Cambia tu contraseña después de iniciar sesión.</span>`;
+    }
   } catch(e) {
     res.style.display = 'block';
     res.style.background = '#FEE2E2'; res.style.color = '#DC2626';

@@ -23,13 +23,16 @@ public class AuthService {
     private final LogRepository logRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final EmailService emailService;
 
     public AuthService(UserRepository userRepository, LogRepository logRepository,
-                       PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
+                       PasswordEncoder passwordEncoder, JwtUtil jwtUtil,
+                       EmailService emailService) {
         this.userRepository = userRepository;
         this.logRepository = logRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
+        this.emailService = emailService;
     }
 
     @Value("${app.jwt.expiration-ms}")
@@ -95,22 +98,36 @@ public class AuthService {
         }
 
         var user = opt.get();
+
+        if (user.getCorreo() == null || user.getCorreo().isBlank()) {
+            throw new RuntimeException("El usuario no tiene un correo registrado. Contacta al administrador.");
+        }
+
         String newPassword = generateTemporalPassword();
         user.setPasswordHash(passwordEncoder.encode(newPassword));
         userRepository.save(user);
 
+        boolean emailSent = emailService.sendPasswordRecovery(
+                user.getCorreo(), user.getNombreCompleto(),
+                user.getUsername(), newPassword);
+
         logRepository.save(LogEntry.builder()
                 .nivel("info").modulo("auth")
-                .mensaje("Contrasena restablecida para: " + request.getUsernameOrEmail())
+                .mensaje("Contrasena restablecida para: " + request.getUsernameOrEmail()
+                        + (emailSent ? " (correo enviado)" : " (correo NO enviado)"))
                 .usuario(user)
                 .build());
 
         return Map.of(
-                "mensaje", "Tu contrasena ha sido restablecida",
+                "mensaje", emailSent
+                        ? "Tu contrasena ha sido restablecida. Revisa tu correo " + user.getCorreo()
+                        : "Tu contrasena ha sido restablecida",
                 "username", user.getUsername(),
                 "password", newPassword,
                 "nombre", user.getNombre(),
-                "apellidos", user.getApellidos()
+                "apellidos", user.getApellidos(),
+                "correo", user.getCorreo(),
+                "correoEnviado", emailSent
         );
     }
 
