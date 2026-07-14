@@ -24,7 +24,6 @@
         <module>backend/auth-service</module>
         <module>backend/product-service</module>
         <module>backend/sale-service</module>
-        <module>frontend/frontend-service</module>
     </modules>
 
     <properties>

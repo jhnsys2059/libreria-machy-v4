@@ -7,7 +7,7 @@ COPY backend/gateway-service/pom.xml backend/gateway-service/pom.xml
 COPY backend/auth-service/pom.xml backend/auth-service/pom.xml
 COPY backend/product-service/pom.xml backend/product-service/pom.xml
 COPY backend/sale-service/pom.xml backend/sale-service/pom.xml
-COPY frontend/frontend-service/pom.xml frontend/frontend-service/pom.xml
+
 RUN mvn dependency:go-offline -pl backend/auth-service -am || true
 COPY . .
 RUN mvn clean package -pl backend/auth-service -am -DskipTests

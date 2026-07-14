@@ -51,26 +51,7 @@ spring:
           uri: ${SALE_SERVICE_URL:http://localhost:8083}
           predicates:
             - Path=/api/scan/**
-        - id: frontend-service
-          uri: ${FRONTEND_SERVICE_URL:http://localhost:8084}
-          predicates:
-            - Path=/css/**
-            - Path=/js/**
-            - Path=/assets/**
-            - Path=/favicon.ico
-        - id: frontend-index
-          uri: ${FRONTEND_SERVICE_URL:http://localhost:8084}
-          predicates:
-            - Path=/remote-scan.html
-            - Path=/
-          filters:
-            - SetPath=/
-        - id: frontend-spa-catch-all
-          uri: ${FRONTEND_SERVICE_URL:http://localhost:8084}
-          predicates:
-            - Path=/**
-          filters:
-            - SetPath=/
+
 
       globalcors:
         cors-configurations:
