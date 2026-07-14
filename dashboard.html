@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Libreria Machy - Microservices Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #1a1a2e; color: #eee; min-height: 100vh; }
+        .header { background: linear-gradient(135deg, #16213e, #0f3460); padding: 20px 40px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        .header h1 { font-size: 24px; } .header h1 span { color: #e94560; }
+        .header .status { display: flex; gap: 8px; align-items: center; } .dot { width: 10px; height: 10px; border-radius: 50%; background: #00b894; animation: pulse 2s infinite; } @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+        .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+        .section-title { font-size: 18px; margin-bottom: 15px; color: #e94560; text-transform: uppercase; letter-spacing: 2px; }
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .service-card { background: #16213e; border-radius: 10px; padding: 20px; border-left: 4px solid #00b894; transition: transform 0.2s; }
+        .service-card:hover { transform: translateY(-3px); }
+        .service-card h3 { font-size: 14px; color: #aaa; margin-bottom: 5px; }
+        .service-card .port { font-size: 24px; font-weight: bold; color: #00b894; }
+        .service-card .url { font-size: 11px; color: #666; margin-top: 5px; word-break: break-all; }
+        .panel { background: #16213e; border-radius: 10px; padding: 25px; margin-bottom: 20px; }
+        .login-form { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+        .login-form input { background: #0f3460; border: 1px solid #333; color: #eee; padding: 10px 15px; border-radius: 6px; font-size: 14px; flex: 1; min-width: 150px; }
+        .login-form button { background: #e94560; color: white; border: none; padding: 10px 25px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: bold; }
+        .login-form button:hover { background: #c0392b; }
+        .token-box { background: #0f3460; border-radius: 6px; padding: 12px; font-family: monospace; font-size: 12px; word-break: break-all; color: #00b894; margin-bottom: 20px; display: none; }
+        .endpoint-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+        .endpoint-btn { background: #0f3460; border: 1px solid #333; color: #eee; padding: 12px 15px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 13px; transition: border-color 0.2s; }
+        .endpoint-btn:hover { border-color: #e94560; }
+        .endpoint-btn .method { color: #00b894; font-weight: bold; margin-right: 8px; }
+        .endpoint-btn .method.post { color: #f39c12; }
+        .result-box { background: #0a0a1a; border: 1px solid #333; border-radius: 6px; padding: 15px; margin-top: 15px; font-family: monospace; font-size: 12px; max-height: 400px; overflow-y: auto; white-space: pre-wrap; word-break: break-word; color: #00b894; min-height: 60px; }
+        .arch-box { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; text-align: center; margin: 20px 0; }
+        .arch-box .node { background: #0f3460; border-radius: 8px; padding: 15px 5px; }
+        .arch-box .node .name { font-size: 11px; color: #aaa; }
+        .arch-box .node .port { font-size: 16px; font-weight: bold; color: #00b894; }
+        .arch-box .node.gateway { border: 2px solid #e94560; }
+        .arrow { display: flex; align-items: center; justify-content: center; color: #e94560; font-size: 20px; }
+        .loading { color: #f39c12; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>&#128218; Libreria <span>Machy</span> - Microservices v4.0</h1>
+        <div class="status"><div class="dot"></div> Todos los servicios activos</div>
+    </div>
+
+    <div class="container">
+        <div class="section-title">Arquitectura de Microservicios</div>
+        <div class="arch-box">
+            <div class="node"><div class="name">Discovery</div><div class="port">:8761</div></div>
+            <div class="node gateway"><div class="name">Gateway</div><div class="port">:8080</div></div>
+            <div class="node"><div class="name">Auth</div><div class="port">:8081</div></div>
+            <div class="node"><div class="name">Product</div><div class="port">:8082</div></div>
+            <div class="node"><div class="name">Sale</div><div class="port">:8083</div></div>
+        </div>
+
+        <div class="section-title">Servicios Activos</div>
+        <div class="services-grid">
+            <div class="service-card"><h3>DISCOVERY SERVICE</h3><div class="port">:8761</div><div class="url">Eureka - Registro de servicios</div></div>
+            <div class="service-card"><h3>GATEWAY SERVICE</h3><div class="port">:8080</div><div class="url">API Gateway - Punto unico de entrada</div></div>
+            <div class="service-card"><h3>AUTH SERVICE</h3><div class="port">:8081</div><div class="url">Login, JWT, Usuarios</div></div>
+            <div class="service-card"><h3>PRODUCT SERVICE</h3><div class="port">:8082</div><div class="url">Productos, Categorias, Proveedores</div></div>
+            <div class="service-card"><h3>SALE SERVICE</h3><div class="port">:8083</div><div class="url">Ventas, Dashboard, Asistencia</div></div>
+        </div>
+
+        <div class="panel">
+            <div class="section-title">Login</div>
+            <div class="login-form">
+                <input type="text" id="username" placeholder="Username" value="admin">
+                <input type="password" id="password" placeholder="Password" value="admin123">
+                <button onclick="doLogin()">Iniciar Sesion</button>
+            </div>
+            <div class="token-box" id="tokenBox"></div>
+        </div>
+
+        <div class="panel">
+            <div class="section-title">Endpoints de la API</div>
+            <div class="endpoint-grid">
+                <button class="endpoint-btn" onclick="callAPI('POST', '/api/auth/login', {username:'admin',password:'admin123'})"><span class="method post">POST</span>/api/auth/login</button>
+                <button class="endpoint-btn" onclick="callAPI('GET', '/api/auth/user/admin')"><span class="method">GET</span>/api/auth/user/{username}</button>
+                <button class="endpoint-btn" onclick="callAPI('GET', '/api/categories')"><span class="method">GET</span>/api/categories</button>
+                <button class="endpoint-btn" onclick="callAPI('GET', '/api/products')"><span class="method">GET</span>/api/products</button>
+                <button class="endpoint-btn" onclick="callAPI('GET', '/api/suppliers')"><span class="method">GET</span>/api/suppliers</button>
+                <button class="endpoint-btn" onclick="callAPI('GET', '/api/sales')"><span class="method">GET</span>/api/sales</button>
+                <button class="endpoint-btn" onclick="callAPI('GET', '/api/dashboard')"><span class="method">GET</span>/api/dashboard</button>
+                <button class="endpoint-btn" onclick="callAPI('GET', '/api/attendance')"><span class="method">GET</span>/api/attendance</button>
+            </div>
+            <div class="result-box" id="resultBox">Haz clic en un endpoint para ver la respuesta...</div>
+        </div>
+
+        <div class="panel">
+            <div class="section-title">Base de Datos - NeonDB (PostgreSQL)</div>
+            <div style="color: #aaa; font-size: 13px; line-height: 1.8;">
+                <strong style="color: #00b894;">Esquemas:</strong><br>
+                &bull; <code>auth_schema</code> - Tabla usuarios, logs<br>
+                &bull; <code>product_schema</code> - Tablas productos, categorias, proveedores<br>
+                &bull; <code>sale_schema</code> - Tablas ventas, venta_items, asistencia, logs<br><br>
+                <strong style="color: #00b894;">Usuarios por defecto:</strong><br>
+                &bull; admin / admin123 (Administrador)<br>
+                &bull; ana / vendedor123 (Vendedor - turno completo)<br>
+                &bull; miguel / vendedor123 (Vendedor - turno tarde)
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const BASE = 'http://localhost:8080';
+        let currentToken = '';
+
+        async function doLogin() {
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+            await callAPI('POST', '/api/auth/login', {username: u, password: p});
+        }
+
+        async function callAPI(method, path, body) {
+            const box = document.getElementById('resultBox');
+            box.innerHTML = '<span class="loading">Consultando ' + method + ' ' + path + '...</span>';
+            try {
+                const opts = { method, headers: {'Content-Type': 'application/json'} };
+                if (currentToken) opts.headers['Authorization'] = 'Bearer ' + currentToken;
+                if (body) opts.body = JSON.stringify(body);
+                const resp = await fetch(BASE + path, opts);
+                const data = await resp.json();
+                if (path === '/api/auth/login' && data.data && data.data.token) {
+                    currentToken = data.data.token;
+                    const tokenBox = document.getElementById('tokenBox');
+                    tokenBox.style.display = 'block';
+                    tokenBox.innerHTML = 'JWT Token: ' + currentToken.substring(0, 80) + '...';
+                }
+                box.textContent = JSON.stringify(data, null, 2);
+            } catch(e) {
+                box.textContent = 'Error: ' + e.message + '\n\nVerifica que el Gateway este corriendo en ' + BASE;
+            }
+        }
+    </script>
+</body>
+</html>
