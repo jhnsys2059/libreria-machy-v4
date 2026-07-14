@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.HashMap;
 import java.util.UUID;
 
 @RestController
@@ -21,10 +22,17 @@ public class AttendanceController {
     public ResponseEntity<Map<String, Object>> getStatus(
             @RequestHeader("X-User-Id") String userId) {
         try {
-            return ResponseEntity.ok(Map.of("success", true,
-                "data", attendanceService.getStatusHoy(UUID.fromString(userId))));
+            var data = attendanceService.getStatusHoy(UUID.fromString(userId));
+            Map<String, Object> res = new HashMap<>();
+            res.put("success", true);
+            res.put("data", data);
+            return ResponseEntity.ok(res);
         } catch (Exception e) {
-            return ResponseEntity.ok(Map.of("success", false, "error", e.getMessage()));
+            Map<String, Object> res = new HashMap<>();
+            res.put("success", false);
+            res.put("error", String.valueOf(e.getMessage()));
+            res.put("type", e.getClass().getSimpleName());
+            return ResponseEntity.ok(res);
         }
     }
 

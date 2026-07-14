@@ -35,14 +35,20 @@ public class AttendanceService {
     public Map<String, Object> getStatusHoy(UUID usuarioId) {
         LocalDate hoy = LocalDate.now();
         var opt = attendanceRepository.findByUsuarioIdAndFecha(usuarioId, hoy);
-        return opt.<Map<String, Object>>map(reg -> Map.of(
-                "registrado", true,
-                "horaEntrada", reg.getHoraEntrada() != null ? reg.getHoraEntrada().toString() : null,
-                "horaSalida", reg.getHoraSalida() != null ? reg.getHoraSalida().toString() : null,
-                "turno", reg.getTurno(),
-                "tardanzaMin", reg.getTardanzaMin(),
-                "estado", reg.getEstadoAsistencia()
-        )).orElseGet(() -> Map.of("registrado", false));
+        if (opt.isPresent()) {
+            Attendance reg = opt.get();
+            Map<String, Object> res = new HashMap<>();
+            res.put("registrado", true);
+            res.put("horaEntrada", reg.getHoraEntrada() != null ? reg.getHoraEntrada().toString() : null);
+            res.put("horaSalida", reg.getHoraSalida() != null ? reg.getHoraSalida().toString() : null);
+            res.put("turno", reg.getTurno());
+            res.put("tardanzaMin", reg.getTardanzaMin());
+            res.put("estado", reg.getEstadoAsistencia());
+            return res;
+        }
+        Map<String, Object> empty = new HashMap<>();
+        empty.put("registrado", false);
+        return empty;
     }
 
     @Transactional
