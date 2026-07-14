@@ -12,43 +12,43 @@ spring:
           lower-case-service-id: true
       routes:
         - id: auth-service
-          uri: lb://auth-service
+          uri: ${AUTH_SERVICE_URL:http://localhost:8081}
           predicates:
             - Path=/api/auth/**
         - id: users-route
-          uri: lb://auth-service
+          uri: ${AUTH_SERVICE_URL:http://localhost:8081}
           predicates:
             - Path=/api/users/**
         - id: config-route
-          uri: lb://auth-service
+          uri: ${AUTH_SERVICE_URL:http://localhost:8081}
           predicates:
             - Path=/api/config
         - id: product-service
-          uri: lb://product-service
+          uri: ${PRODUCT_SERVICE_URL:http://localhost:8082}
           predicates:
             - Path=/api/products/**
         - id: categories-route
-          uri: lb://product-service
+          uri: ${PRODUCT_SERVICE_URL:http://localhost:8082}
           predicates:
             - Path=/api/categories/**
         - id: suppliers-route
-          uri: lb://product-service
+          uri: ${PRODUCT_SERVICE_URL:http://localhost:8082}
           predicates:
             - Path=/api/suppliers/**
         - id: sale-service
-          uri: lb://sale-service
+          uri: ${SALE_SERVICE_URL:http://localhost:8083}
           predicates:
             - Path=/api/sales/**
         - id: dashboard-route
-          uri: lb://sale-service
+          uri: ${SALE_SERVICE_URL:http://localhost:8083}
           predicates:
             - Path=/api/dashboard
         - id: attendance-route
-          uri: lb://sale-service
+          uri: ${SALE_SERVICE_URL:http://localhost:8083}
           predicates:
             - Path=/api/attendance/**
         - id: scan-route
-          uri: lb://sale-service
+          uri: ${SALE_SERVICE_URL:http://localhost:8083}
           predicates:
             - Path=/api/scan/**
 
