@@ -21,9 +21,6 @@ public class ScanController {
             @RequestHeader(value = "Host", required = false) String host,
             @RequestHeader(value = "X-Forwarded-Proto", required = false) String forwardedProto) {
         String sessionId = scanService.createSession();
-        if (sessionId == null) {
-            return ResponseEntity.status(503).body(Map.of("success", false, "message", "Maximo de sesiones alcanzado. Intenta mas tarde."));
-        }
         String pin = scanService.getPin(sessionId);
 
         String protocol = "https".equals(forwardedProto) ? "https" : "http";

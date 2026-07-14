@@ -18,14 +18,13 @@ public class AttendanceController {
     }
 
     @GetMapping("/status")
-    public ResponseEntity<?> getStatus(
+    public ResponseEntity<Map<String, Object>> getStatus(
             @RequestHeader("X-User-Id") String userId) {
         try {
             return ResponseEntity.ok(Map.of("success", true,
                 "data", attendanceService.getStatusHoy(UUID.fromString(userId))));
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(Map.of("success", false,
-                "error", e.getClass().getSimpleName() + ": " + e.getMessage()));
+            return ResponseEntity.ok(Map.of("success", false, "error", e.getMessage()));
         }
     }
 
