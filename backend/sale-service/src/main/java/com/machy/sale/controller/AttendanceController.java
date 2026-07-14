@@ -18,10 +18,15 @@ public class AttendanceController {
     }
 
     @GetMapping("/status")
-    public ResponseEntity<Map<String, Object>> getStatus(
+    public ResponseEntity<?> getStatus(
             @RequestHeader("X-User-Id") String userId) {
-        return ResponseEntity.ok(Map.of("success", true,
-            "data", attendanceService.getStatusHoy(UUID.fromString(userId))));
+        try {
+            return ResponseEntity.ok(Map.of("success", true,
+                "data", attendanceService.getStatusHoy(UUID.fromString(userId))));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("success", false,
+                "error", e.getClass().getSimpleName() + ": " + e.getMessage()));
+        }
     }
 
     @PostMapping("/check-in")
