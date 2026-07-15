@@ -12,10 +12,13 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.*;
 
 @Service
 public class AttendanceService {
+
+    private static final ZoneId ZONE = ZoneId.of("America/Lima");
 
     private final AttendanceRepository attendanceRepository;
     private final LogRepository logRepository;
@@ -33,7 +36,7 @@ public class AttendanceService {
     }
 
     public Map<String, Object> getStatusHoy(UUID usuarioId) {
-        LocalDate hoy = LocalDate.now();
+        LocalDate hoy = LocalDate.now(ZONE);
         var opt = attendanceRepository.findByUsuarioIdAndFecha(usuarioId, hoy);
         if (opt.isPresent()) {
             Attendance reg = opt.get();
@@ -61,12 +64,12 @@ public class AttendanceService {
         String nombreCompleto = (String) userData.get("nombreCompleto");
         String turno = userData.get("turno") != null ? (String) userData.get("turno") : "completo";
 
-        LocalDate hoy = LocalDate.now();
+        LocalDate hoy = LocalDate.now(ZONE);
         if (attendanceRepository.findByUsuarioIdAndFecha(usuarioId, hoy).isPresent()) {
             throw new RuntimeException("Ya tienes un registro de entrada hoy");
         }
 
-        LocalTime ahora = LocalTime.now();
+        LocalTime ahora = LocalTime.now(ZONE);
         int tardanzaMin = calcularTardanza(ahora, turno);
 
         Attendance attendance = new Attendance();
@@ -91,7 +94,7 @@ public class AttendanceService {
 
     @Transactional
     public Attendance marcarSalida(UUID usuarioId) {
-        LocalDate hoy = LocalDate.now();
+        LocalDate hoy = LocalDate.now(ZONE);
         Attendance reg = attendanceRepository.findByUsuarioIdAndFecha(usuarioId, hoy)
                 .orElseThrow(() -> new RuntimeException("No hay registro de entrada hoy"));
 
@@ -99,7 +102,7 @@ public class AttendanceService {
             throw new RuntimeException("Ya registraste salida hoy");
         }
 
-        LocalTime ahora = LocalTime.now();
+        LocalTime ahora = LocalTime.now(ZONE);
         reg.setHoraSalida(ahora);
 
         long minsEntrada = reg.getHoraEntrada().getHour() * 60L + reg.getHoraEntrada().getMinute();
