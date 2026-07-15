@@ -50,6 +50,11 @@ resilience4j:
       authService:
         timeoutDuration: 5s
 
+app:
+  scan:
+    session-ttl-ms: 3600000
+    max-sessions: 100
+
 springdoc:
   api-docs:
     path: /api-docs
