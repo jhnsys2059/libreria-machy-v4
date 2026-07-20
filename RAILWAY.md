@@ -20,7 +20,8 @@ Cada servicio agrega `&currentSchema=mischema` automáticamente.
 1. Ve a [railway.app](https://railway.app) → **New Project** → **Deploy from GitHub repo**
 2. Selecciona tu repositorio (`jhnsys2059/libreria-machy-v4`)
 3. Railway creará un servicio inicial. **Elimínalo** (no lo necesitamos)
-4. Agrega los 6 servicios uno por uno usando **"+ New"** → **"GitHub Repo"**
+4. Agrega los 5 servicios uno por uno usando **"+ New"** → **"GitHub Repo"**
+   > **Nota:** El frontend está embebido en el gateway-service, no necesita servicio aparte.
 
 **IMPORTANTE:** Para cada servicio, configura:
 - **Root Directory**: `/`
@@ -98,26 +99,13 @@ CORS_ORIGINS=*
 EUREKA_URL=https://discovery-service-tu-proyecto.up.railway.app/eureka/
 ```
 
-### 6. Frontend Service — Puerto 8084
-| Campo | Valor |
-|-------|-------|
-| Root Directory | `/` |
-| Dockerfile Path | `frontend/frontend-service/Dockerfile` |
-
-**Variables de entorno:**
-```
-PORT=8084
-EUREKA_URL=https://discovery-service-tu-proyecto.up.railway.app/eureka/
-```
-
 ## Paso 2: Orden de deploy
 
 Railway despliega en paralelo, pero los servicios dependen entre sí:
 
 1. **Discovery Service** — espera a que esté "Active" (verde)
 2. **Auth Service, Product Service, Sale Service** — en paralelo
-3. **Gateway Service** — cuando los 3 anteriores estén activos
-4. **Frontend Service** — al final
+3. **Gateway Service** — cuando los 3 anteriores estén activos (el frontend ya está embebido aquí)
 
 Para controlar el orden, despliega solo Discovery primero, luego los otros, etc.
 
