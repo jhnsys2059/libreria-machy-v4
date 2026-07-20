@@ -3,6 +3,7 @@ package com.machy.product.service;
 import com.machy.product.entity.Category;
 import com.machy.product.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -29,6 +30,7 @@ public class CategoryService {
                 .orElseThrow(() -> new RuntimeException("Categoria no encontrada"));
     }
 
+    @Transactional
     public Category create(Category category) {
         if (categoryRepository.existsByNombre(category.getNombre())) {
             throw new RuntimeException("Ya existe una categoria con ese nombre");

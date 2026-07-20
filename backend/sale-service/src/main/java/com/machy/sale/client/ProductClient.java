@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-@FeignClient(name = "product-service", fallbackFactory = ProductClientFallback.class)
+@FeignClient(name = "product-service", url = "${PRODUCT_SERVICE_URL:http://localhost:8082}", fallbackFactory = ProductClientFallback.class)
 public interface ProductClient {
 
     @GetMapping("/api/products/{id}")

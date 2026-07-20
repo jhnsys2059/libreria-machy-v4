@@ -5,10 +5,16 @@ spring:
   application:
     name: sale-service
   datasource:
-    url: jdbc:postgresql://ep-crimson-paper-ataoeczu-pooler.c-9.us-east-1.aws.neon.tech/neondb?sslmode=require&currentSchema=sale_schema
-    username: neondb_owner
-    password: npg_tbdKHk45vIMg
+    url: ${DB_URL:jdbc:postgresql://ep-crimson-paper-ataoeczu-pooler.c-9.us-east-1.aws.neon.tech/neondb?sslmode=require&currentSchema=sale_schema}
+    username: ${DB_USERNAME:neondb_owner}
+    password: ${DB_PASSWORD:npg_tbdKHk45vIMg}
     driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 1
+      connection-timeout: 30000
+      idle-timeout: 300000
+      max-lifetime: 600000
   jpa:
     hibernate:
       ddl-auto: update

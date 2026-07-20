@@ -5,6 +5,7 @@ import com.machy.auth.entity.User;
 import com.machy.auth.repository.LogRepository;
 import com.machy.auth.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.*;
@@ -65,6 +66,7 @@ public class BackupService {
         return result;
     }
 
+    @Transactional
     public Map<String, Object> importData(Map<String, Object> backup) {
         @SuppressWarnings("unchecked")
         List<Map<String, Object>> usersData = (List<Map<String, Object>>) backup.get("users");

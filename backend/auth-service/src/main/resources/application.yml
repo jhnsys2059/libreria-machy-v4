@@ -5,7 +5,7 @@ spring:
   application:
     name: auth-service
   datasource:
-    url: jdbc:postgresql://ep-crimson-paper-ataoeczu-pooler.c-9.us-east-1.aws.neon.tech/neondb?sslmode=require&currentSchema=auth_schema
+    url: ${DB_URL:jdbc:postgresql://ep-crimson-paper-ataoeczu-pooler.c-9.us-east-1.aws.neon.tech/neondb?sslmode=require&currentSchema=auth_schema}
     username: ${DB_USERNAME:neondb_owner}
     password: ${DB_PASSWORD:npg_tbdKHk45vIMg}
     driver-class-name: org.postgresql.Driver
@@ -52,7 +52,7 @@ eureka:
 
 app:
   jwt:
-    secret: libreria_machy_jwt_secret_key_2024_v4_microservices_very_long
+    secret: ${JWT_SECRET:libreria_machy_jwt_secret_key_2024_v4_microservices_very_long}
     expiration-ms: 28800000
   smtp:
     from: ${SMTP_FROM:${SMTP_USERNAME:}}

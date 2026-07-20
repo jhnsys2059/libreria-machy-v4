@@ -24,8 +24,8 @@ public class UserController {
     @GetMapping
     public ResponseEntity<Map<String, Object>> getAll(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "99999") int size) {
-        if (page > 0 || size < 99999) {
+            @RequestParam(defaultValue = "100") int size) {
+        if (page > 0 || size < 100) {
             return ResponseEntity.ok(Map.of("success", true,
                 "data", userService.findAll(PageRequest.of(page, size, Sort.by("nombre")))));
         }

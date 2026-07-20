@@ -3,6 +3,7 @@ package com.machy.product.service;
 import com.machy.product.entity.Supplier;
 import com.machy.product.repository.SupplierRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -29,6 +30,7 @@ public class SupplierService {
                 .orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
     }
 
+    @Transactional
     public Supplier create(Supplier supplier) {
         supplier.setActivo(true);
         return supplierRepository.save(supplier);

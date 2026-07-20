@@ -11,6 +11,8 @@ import com.machy.sale.repository.SaleItemRepository;
 import com.machy.sale.repository.SaleRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +26,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class SaleService {
+
+    private static final Logger log = LoggerFactory.getLogger(SaleService.class);
 
     private final SaleRepository saleRepository;
     private final SaleItemRepository saleItemRepository;
@@ -70,7 +74,9 @@ public class SaleService {
                 String apellidos = (String) data.getOrDefault("apellidos", "");
                 return (nombre + " " + apellidos).trim();
             }
-        } catch (Exception ignored) {}
+        } catch (Exception e) {
+            log.warn("Error al resolver nombre de usuario {}: {}", userId, e.getMessage());
+        }
         return "Vendedor";
     }
 
@@ -85,8 +91,9 @@ public class SaleService {
                 throw new RuntimeException("Producto no encontrado: " + itemReq.getProductoId());
             }
 
-            var productData = (Map<?, ?>) productResponse.get("data");
-            int stockActual = (Integer) productData.get("stock");
+            @SuppressWarnings("unchecked")
+            var productData = (Map<String, Object>) productResponse.get("data");
+            int stockActual = ((Number) productData.getOrDefault("stock", 0)).intValue();
             if (stockActual < itemReq.getCantidad()) {
                 throw new RuntimeException("Stock insuficiente para: " + productData.get("nombre"));
             }
@@ -100,9 +107,9 @@ public class SaleService {
 
             SaleItem item = new SaleItem();
             item.setProductoId(UUID.fromString(itemReq.getProductoId()));
-            item.setCodigo((String) productData.get("codigo"));
-            item.setNombreProducto((String) productData.get("nombre"));
-            item.setCategoria((String) productData.get("categoriaNombre"));
+            item.setCodigo((String) productData.getOrDefault("codigo", ""));
+            item.setNombreProducto((String) productData.getOrDefault("nombre", ""));
+            item.setCategoria((String) productData.getOrDefault("categoriaNombre", ""));
             item.setCantidad(itemReq.getCantidad());
             item.setPrecioUnitario(itemReq.getPrecioUnitario());
             item.setSubtotal(itemSubtotal);

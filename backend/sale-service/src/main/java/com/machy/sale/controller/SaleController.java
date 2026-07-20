@@ -26,23 +26,28 @@ public class SaleController {
             @RequestHeader(value = "X-User-Id", required = false) String userId,
             @RequestHeader(value = "X-User-Rol", required = false) String userRol,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "99999") int size) {
-        boolean paginate = page > 0 || size < 99999;
-        if ("admin".equals(userRol)) {
-            if (paginate) {
-                return ResponseEntity.ok(Map.of("success", true,
-                    "data", saleService.findAll(PageRequest.of(page, size, Sort.by("createdAt").descending()))));
+            @RequestParam(defaultValue = "100") int size) {
+        try {
+            boolean paginate = page > 0 || size < 100;
+            if ("admin".equals(userRol)) {
+                if (paginate) {
+                    return ResponseEntity.ok(Map.of("success", true,
+                        "data", saleService.findAll(PageRequest.of(page, size, Sort.by("createdAt").descending()))));
+                }
+                return ResponseEntity.ok(Map.of("success", true, "data", saleService.findAll()));
+            }
+            if (userId != null) {
+                UUID uid = UUID.fromString(userId);
+                if (paginate) {
+                    return ResponseEntity.ok(Map.of("success", true,
+                        "data", saleService.findByVendedor(uid)));
+                }
+                return ResponseEntity.ok(Map.of("success", true, "data", saleService.findByVendedor(uid)));
             }
             return ResponseEntity.ok(Map.of("success", true, "data", saleService.findAll()));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("success", false, "message", "ID de usuario invalido"));
         }
-        if (userId != null) {
-            if (paginate) {
-                return ResponseEntity.ok(Map.of("success", true,
-                    "data", saleService.findByVendedor(UUID.fromString(userId))));
-            }
-            return ResponseEntity.ok(Map.of("success", true, "data", saleService.findByVendedor(UUID.fromString(userId))));
-        }
-        return ResponseEntity.ok(Map.of("success", true, "data", saleService.findAll()));
     }
 
     @GetMapping("/{id}")

@@ -11,6 +11,7 @@ import com.machy.auth.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.time.Instant;
@@ -38,6 +39,7 @@ public class AuthService {
     @Value("${app.jwt.expiration-ms}")
     private long jwtExpirationMs;
 
+    @Transactional
     public LoginResponse login(LoginRequest request) {
         var userOpt = userRepository.findByUsername(request.getUsername().toLowerCase());
 
@@ -92,6 +94,7 @@ public class AuthService {
                 user.getApellidos(), user.getUsername(), user.getRol(), user.getTurno(), avatar);
     }
 
+    @Transactional
     public Map<String, Object> recoverPassword(PasswordRecoveryRequest request) {
         var opt = userRepository.findByUsernameOrCorreo(
                 request.getUsernameOrEmail(), request.getUsernameOrEmail());

@@ -26,11 +26,11 @@ public class ProductController {
             @RequestParam(required = false) String q,
             @RequestParam(required = false) String categoria,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "99999") int size) {
+            @RequestParam(defaultValue = "100") int size) {
         if (q != null && !q.isBlank()) {
             return ResponseEntity.ok(Map.of("success", true, "data", productService.buscar(q, categoria)));
         }
-        if (page > 0 || size < 99999) {
+        if (page > 0 || size < 100) {
             return ResponseEntity.ok(Map.of("success", true,
                 "data", productService.findAll(PageRequest.of(page, size, Sort.by("nombre")))));
         }

@@ -3,6 +3,7 @@ package com.machy.auth.service;
 import com.machy.auth.entity.Config;
 import com.machy.auth.repository.ConfigRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -24,6 +25,7 @@ public class ConfigService {
         return result;
     }
 
+    @Transactional
     public Map<String, String> saveAll(Map<String, String> data) {
         for (Map.Entry<String, String> entry : data.entrySet()) {
             Config config = configRepository.findById(entry.getKey()).orElse(new Config());
