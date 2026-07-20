@@ -10,7 +10,7 @@ COPY backend/sale-service/pom.xml backend/sale-service/pom.xml
 
 RUN mvn dependency:go-offline -pl backend/auth-service -am || true
 COPY . .
-RUN mvn clean package -pl backend/auth-service -am -DskipTests
+RUN mvn clean package -pl backend/auth-service -am -Dmaven.test.skip=true
 
 # Runtime stage
 FROM eclipse-temurin:17-jre-jammy
