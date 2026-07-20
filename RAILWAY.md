@@ -13,7 +13,7 @@ Todas las conexiones a BD usan los mismos valores base. En Neon.tech obtienes:
 - `DB_USERNAME` = usuario de Neon
 - `DB_PASSWORD` = password de Neon
 
-Cada servicio agrega `&currentSchema=mischema` automáticamente.
+No es necesario agregar `currentSchema` en la URL. Cada servicio usa `default_schema` de Hibernate automáticamente.
 
 ## Paso 1: Crear el proyecto en Railway
 
@@ -44,7 +44,7 @@ Sin variables de entorno extra (usa defaults).
 **Variables de entorno:**
 ```
 PORT=8081
-DB_URL=jdbc:postgresql://ep-tu-proyecto.up.railway.app/neondb?sslmode=require&currentSchema=auth_schema
+DB_URL=jdbc:postgresql://ep-tu-proyecto.up.railway.app/neondb?sslmode=require
 DB_USERNAME=neondb_owner
 DB_PASSWORD=tu_password_neon
 JWT_SECRET=una_clave_segura_muy_larga_para_firmar_tokens
@@ -60,7 +60,7 @@ EUREKA_URL=https://discovery-service-tu-proyecto.up.railway.app/eureka/
 **Variables de entorno:**
 ```
 PORT=8082
-DB_URL=jdbc:postgresql://ep-tu-proyecto.up.railway.app/neondb?sslmode=require&currentSchema=product_schema
+DB_URL=jdbc:postgresql://ep-tu-proyecto.up.railway.app/neondb?sslmode=require
 DB_USERNAME=neondb_owner
 DB_PASSWORD=tu_password_neon
 EUREKA_URL=https://discovery-service-tu-proyecto.up.railway.app/eureka/
@@ -75,7 +75,7 @@ EUREKA_URL=https://discovery-service-tu-proyecto.up.railway.app/eureka/
 **Variables de entorno:**
 ```
 PORT=8083
-DB_URL=jdbc:postgresql://ep-tu-proyecto.up.railway.app/neondb?sslmode=require&currentSchema=sale_schema
+DB_URL=jdbc:postgresql://ep-tu-proyecto.up.railway.app/neondb?sslmode=require
 DB_USERNAME=neondb_owner
 DB_PASSWORD=tu_password_neon
 AUTH_SERVICE_URL=https://auth-service-tu-proyecto.up.railway.app
