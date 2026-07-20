@@ -57,6 +57,8 @@ resilience4j:
         timeoutDuration: 5s
 
 app:
+  product-service-url: ${PRODUCT_SERVICE_URL:http://localhost:8082}
+  auth-service-url: ${AUTH_SERVICE_URL:http://localhost:8081}
   scan:
     session-ttl-ms: 3600000
     max-sessions: 100

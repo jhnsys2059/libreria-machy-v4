@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-@FeignClient(name = "auth-service", url = "${AUTH_SERVICE_URL:http://localhost:8081}", fallbackFactory = AuthClientFallback.class)
+@FeignClient(name = "auth-service", url = "${app.auth-service-url}", fallbackFactory = AuthClientFallback.class)
 public interface AuthClient {
 
     @GetMapping("/api/auth/user/id/{id}")
